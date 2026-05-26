@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mulenga Munthali — ICT Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #18181f;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --text: #f0f0f8;
+    --muted: #8888aa;
+    --border: rgba(0,229,255,0.15);
+    --card: #13131b;
+    --nav-bg: rgba(10,10,15,0.8);
+    --about-text-p: #9999bb;
+    --tl-dot-bg: #0a0a0f;
+    --grid-line: rgba(0,229,255,0.03);
+    --transition-speed: 0.4s;
+  }
+
+  html.light {
+    --bg: #f0f4ff;
+    --bg2: #e4eaf7;
+    --bg3: #d8e0f0;
+    --accent: #0066cc;
+    --accent2: #6d28d9;
+    --accent3: #059669;
+    --text: #1d294a;
+    --muted: #64748b;
+    --border: rgba(0,102,204,0.18);
+    --card: #ffffff;
+    --nav-bg: rgba(240,244,255,0.88);
+    --about-text-p: #334155;
+    --tl-dot-bg: #f0f4ff;
+    --grid-line: rgba(0, 102, 204, 0);
+  }
+
+  /* Theme toggle button */
+  .theme-toggle {
+    width: 52px; height: 28px;
+    border-radius: 14px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    cursor: pointer;
+    position: relative;
+    transition: background var(--transition-speed), border-color var(--transition-speed);
+    flex-shrink: 0;
+    display: flex; align-items: center;
+    padding: 3px;
+  }
+  .theme-toggle:hover { border-color: var(--accent); }
+  .toggle-knob {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 4px;
+    transition: transform var(--transition-speed) cubic-bezier(0.34,1.56,0.64,1), background var(--transition-speed);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    line-height: 1;
+  }
+  html.light .toggle-knob { transform: translateX(24px); }
+  .toggle-icon-dark, .toggle-icon-light { position: absolute; font-size: 10px; transition: opacity 0.3s; }
+  .toggle-icon-dark { right: 6px; opacity: 1; }
+  .toggle-icon-light { left: 6px; opacity: 0; }
+  html.light .toggle-icon-dark { opacity: 0; }
+  html.light .toggle-icon-light { opacity: 1; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+    transition: background var(--transition-speed), color var(--transition-speed);
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 40px; height: 40px;
+    border: 1px solid rgba(0,229,255,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease-out, width 0.3s, height 0.3s, opacity 0.3s;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 2px; }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("david.PNG");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  /* Grid lines */
+  .grid-bg {
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+    transition: background-image var(--transition-speed);
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.25rem 3rem;
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition-speed), border-color var(--transition-speed);
+  }
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.6rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 18px rgba(0,229,255,0.45);
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* SECTIONS */
+  section { position: relative; z-index: 1; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 0 3rem;
+    padding-top: 80px;
+    background:
+      linear-gradient(135deg, rgba(10,10,15,0.92) 0%, rgba(10,10,15,0.75) 50%, rgba(10,10,15,0.92) 100%),
+      /* =====================================================
+         BACKGROUND IMAGE — replace the path below with your
+         own image file location, for example:
+           url('images/my-photo.jpg')
+           url('C:/Users/Mulenga/Pictures/bg.jpg')
+           url('./background.png')
+         ===================================================== */
+      url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=1600&q=80') center/cover no-repeat;
+    position: relative;
+  }
+  .hero-inner { max-width: 900px; }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: blink 1.5s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  h1 {
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 700;
+    line-height: 1.0;
+    margin-bottom: 0.2em;
+    letter-spacing: -0.02em;
+  }
+  .name-accent { color: var(--accent); }
+  .hero-sub {
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    color: var(--muted);
+    font-weight: 300;
+    margin-bottom: 2rem;
+    margin-top: 0.5rem;
+  }
+  .hero-desc {
+    font-size: 1rem;
+    color: #9999bb;
+    max-width: 560px;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+  }
+
+  .btn-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0.75rem 1.75rem;
+    background: var(--accent);
+    color: #000;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,229,255,0.35);
+  }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0.75rem 1.75rem;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Floating orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb-1 { width: 500px; height: 500px; background: rgba(124,58,237,0.12); top: 10%; right: -100px; }
+  .orb-2 { width: 350px; height: 350px; background: rgba(0,229,255,0.08); bottom: 5%; left: 20%; }
+
+  /* Stats row */
+  .stats-row {
+    display: flex; gap: 2.5rem;
+    margin-top: 3.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .stat-item {}
+  .stat-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-label { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+
+  /* SECTION HEADERS */
+  .section-header {
+    margin-bottom: 3rem;
+  }
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  /* ABOUT */
+  .about { padding: 8rem 3rem; background: var(--bg2); }
+  .about-grid {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+  }
+  .about-avatar {
+    aspect-ratio: 1;
+    max-width: 380px;
+    border-radius: 4px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-initials {
+    font-family: 'Space Mono', monospace;
+    font-size: 5rem;
+    font-weight: 700;
+    color: var(--accent);
+    opacity: 0.15;
+  }
+  .avatar-corner {
+    position: absolute;
+    width: 40px; height: 40px;
+    border-color: var(--accent);
+    border-style: solid;
+    opacity: 0.5;
+  }
+  .tl { top: 16px; left: 16px; border-width: 2px 0 0 2px; }
+  .tr { top: 16px; right: 16px; border-width: 2px 2px 0 0; }
+  .bl { bottom: 16px; left: 16px; border-width: 0 0 2px 2px; }
+  .br { bottom: 16px; right: 16px; border-width: 0 2px 2px 0; }
+  .about-text p { color: var(--about-text-p); line-height: 1.9; margin-bottom: 1.2rem; font-size: 0.95rem; }
+
+  .contact-list { list-style: none; margin-top: 2rem; display: flex; flex-direction: column; gap: 0.75rem; }
+  .contact-list li {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 0.9rem;
+  }
+  .contact-list li .lbl { color: var(--muted); font-family: 'Space Mono', monospace; font-size: 0.7rem; min-width: 60px; }
+  .contact-list li a { color: var(--accent); text-decoration: none; }
+  .contact-list li a:hover { text-decoration: underline; }
+  .contact-list li span { color: var(--text); }
+
+  /* SKILLS */
+  .skills-section { padding: 8rem 3rem; }
+  .skills-inner { max-width: 1100px; margin: 0 auto; }
+
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.75rem;
+    transition: border-color 0.3s, transform 0.3s, background var(--transition-speed);
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--card-accent, var(--accent)), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .skill-card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-4px); }
+  .skill-card:hover::before { opacity: 1; }
+
+  .skill-card-icon {
+    width: 44px; height: 44px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  .skill-card h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+  .skill-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.25rem; }
+
+  .skill-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    padding: 3px 10px;
+    border-radius: 2px;
+    border: 1px solid rgba(0,229,255,0.2);
+    color: var(--accent);
+    background: rgba(0,229,255,0.05);
+    letter-spacing: 0.05em;
+  }
+
+  /* EXPERIENCE */
+  .experience { padding: 8rem 3rem; background: var(--bg2); }
+  .experience-inner { max-width: 900px; margin: 0 auto; }
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 0; top: 8px; bottom: 8px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 3rem;
+    padding-left: 1.5rem;
+  }
+  .tl-dot {
+    position: absolute; left: -2rem;
+    width: 10px; height: 10px;
+    border: 2px solid var(--accent);
+    background: var(--tl-dot-bg);
+    border-radius: 50%;
+    top: 6px;
+  }
+  .tl-dot.active { background: var(--accent); box-shadow: 0 0 12px rgba(0,229,255,0.5); }
+  .tl-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+  .tl-role { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.2rem; }
+  .tl-org { font-size: 0.85rem; color: var(--accent2); margin-bottom: 0.75rem; }
+  .tl-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.8; }
+  .tl-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 0.75rem; }
+  .tl-tag {
+    font-size: 0.7rem;
+    padding: 2px 10px;
+    border-radius: 2px;
+    background: rgba(124,58,237,0.12);
+    border: 1px solid rgba(124,58,237,0.3);
+    color: #a78bfa;
+  }
+
+  /* PROJECTS */
+  .projects { padding: 8rem 3rem; }
+  .projects-inner { max-width: 1100px; margin: 0 auto; }
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+  .proj-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.75rem;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .proj-card:hover { border-color: rgba(0,229,255,0.35); transform: translateY(-4px); }
+  .proj-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.15em;
+  }
+  .proj-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .proj-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.75; margin-bottom: 1.25rem; }
+  .proj-stack { display: flex; gap: 6px; flex-wrap: wrap; }
+  .proj-tech {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent3);
+    padding: 2px 8px;
+    border: 1px solid rgba(16,185,129,0.25);
+    background: rgba(16,185,129,0.06);
+    border-radius: 2px;
+  }
+  .proj-glow {
+    position: absolute; bottom: 0; right: 0;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle, rgba(0,229,255,0.07), transparent 70%);
+    pointer-events: none;
+  }
+
+  /* EDUCATION */
+  .education { padding: 8rem 3rem; background: var(--bg2); }
+  .edu-inner { max-width: 900px; margin: 0 auto; }
+  .edu-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem 2.5rem;
+    display: flex; gap: 2rem; align-items: flex-start;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.3s;
+  }
+  .edu-card:hover { border-color: rgba(0,229,255,0.3); }
+  .edu-icon {
+    width: 52px; height: 52px; flex-shrink: 0;
+    border-radius: 8px;
+    background: rgba(0,229,255,0.08);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+  }
+  .edu-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
+  .edu-inst { font-size: 0.85rem; color: var(--accent); margin-bottom: 0.4rem; }
+  .edu-year { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+  .edu-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.7; margin-top: 0.5rem; }
+
+  /* CONTACT */
+  .contact-section { padding: 8rem 3rem; }
+  .contact-inner { max-width: 800px; margin: 0 auto; text-align: center; }
+  .contact-inner .section-header { text-align: center; }
+  .contact-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 3rem; line-height: 1.8; }
+  .contact-cards { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem; }
+  .contact-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem 2rem;
+    min-width: 200px;
+    transition: border-color 0.3s, transform 0.3s;
+    text-align: left;
+  }
+  .contact-card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-3px); }
+  .cc-icon { font-size: 1.3rem; margin-bottom: 0.75rem; display: block; }
+  .cc-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .cc-value { font-size: 0.9rem; font-weight: 500; }
+  .cc-value a { color: var(--accent); text-decoration: none; }
+  .cc-value a:hover { text-decoration: underline; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 3rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    position: relative; z-index: 1;
+  }
+  .footer-dot { color: var(--accent); }
+
+  /* Animations */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { padding: 0 1.5rem; padding-top: 80px; }
+    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .about, .skills-section, .experience, .projects, .education, .contact-section { padding: 5rem 1.5rem; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#home" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
+    <svg width="58" height="48" viewBox="0 0 58 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 8px rgba(0,229,255,0.45));">
+
+      <!-- ── SCREEN LID ── -->
+      <!-- lid body -->
+      <rect x="5" y="2" width="48" height="32" rx="4" fill="#0d0d14" stroke="#00e5ff" stroke-width="1.5"/>
+      <!-- screen bezel inner -->
+      <rect x="8" y="5" width="42" height="26" rx="2.5" fill="#050508" stroke="#00e5ff" stroke-width="0.6" stroke-opacity="0.35"/>
+
+      <!-- screen glow fill -->
+      <rect x="9" y="6" width="40" height="24" rx="2" fill="#00e5ff" fill-opacity="0.04"/>
+
+      <!-- animated code lines on screen -->
+      <!-- line 1 -->
+      <rect x="12" y="10" width="18" height="1.8" rx="0.9" fill="#00e5ff" opacity="0.7">
+        <animate attributeName="width" values="18;28;18" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+      </rect>
+      <!-- line 2 indent -->
+      <rect x="15" y="14" width="22" height="1.8" rx="0.9" fill="#7c3aed" opacity="0.8">
+        <animate attributeName="width" values="22;14;22" dur="2.4s" begin="0.3s" repeatCount="indefinite"/>
+      </rect>
+      <!-- line 3 indent more -->
+      <rect x="18" y="18" width="14" height="1.8" rx="0.9" fill="#00e5ff" opacity="0.5">
+        <animate attributeName="width" values="14;20;14" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+      </rect>
+      <!-- line 4 -->
+      <rect x="12" y="22" width="20" height="1.8" rx="0.9" fill="#10b981" opacity="0.7">
+        <animate attributeName="width" values="20;10;20" dur="2.7s" begin="0.2s" repeatCount="indefinite"/>
+      </rect>
+      <!-- cursor blink -->
+      <rect x="33" y="22" width="1.5" height="1.8" rx="0.5" fill="#00e5ff">
+        <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+      </rect>
+      <!-- line 5 short -->
+      <rect x="12" y="26" width="10" height="1.8" rx="0.9" fill="#7c3aed" opacity="0.6"/>
+
+      <!-- webcam dot top center -->
+      <circle cx="29" cy="3.8" r="1.2" fill="#00e5ff" opacity="0.5">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- ── HINGE ── -->
+      <rect x="10" y="33" width="38" height="2.5" rx="1.25" fill="#0d0d14" stroke="#00e5ff" stroke-width="0.8" stroke-opacity="0.6"/>
+      <!-- hinge centre notch -->
+      <rect x="24" y="33.2" width="10" height="2" rx="1" fill="#00e5ff" fill-opacity="0.15"/>
+
+      <!-- ── BASE / KEYBOARD ── -->
+      <rect x="3" y="35.5" width="52" height="10" rx="3" fill="#0d0d14" stroke="#00e5ff" stroke-width="1.5"/>
+
+      <!-- keyboard key rows -->
+      <!-- row 1 — 8 keys -->
+      <rect x="7"  y="37.5" width="4.5" height="2.5" rx="0.8" fill="#00e5ff" fill-opacity="0.12" stroke="#00e5ff" stroke-width="0.5"/>
+      <rect x="13" y="37.5" width="4.5" height="2.5" rx="0.8" fill="#00e5ff" fill-opacity="0.12" stroke="#00e5ff" stroke-width="0.5"/>
+      <rect x="19" y="37.5" width="4.5" height="2.5" rx="0.8" fill="#00e5ff" fill-opacity="0.12" stroke="#00e5ff" stroke-width="0.5"/>
+      <rect x="25" y="37.5" width="4.5" height="2.5" rx="0.8" fill="#00e5ff" fill-opacity="0.12" stroke="#00e5ff" stroke-width="0.5"/>
+      <rect x="31" y="37.5" width="4.5" height="2.5" rx="0.8" fill="#00e5ff" fill-opacity="0.12" stroke="#00e5ff" stroke-width="0.5"/>
+      <rect x="37" y="37.5" width="4.5" height="2.5" rx="0.8" fill="#00e5ff" fill-opacity="0.12" stroke="#00e5ff" stroke-width="0.5"/>
+      <rect x="43" y="37.5" width="4.5" height="2.5" rx="0.8" fill="#00e5ff" fill-opacity="0.12" stroke="#00e5ff" stroke-width="0.5"/>
+
+      <!-- row 2 — spacebar -->
+      <rect x="14" y="41.2" width="30" height="2.5" rx="0.8" fill="#00e5ff" fill-opacity="0.1" stroke="#00e5ff" stroke-width="0.5"/>
+
+      <!-- power LED bottom right -->
+      <circle cx="51" cy="42.5" r="1.3" fill="#10b981">
+        <animate attributeName="opacity" values="1;0.3;1" dur="2.2s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- ── BASE BOTTOM FEET ── -->
+      <rect x="6"  y="45" width="6" height="2" rx="1" fill="#00e5ff" fill-opacity="0.18" stroke="#00e5ff" stroke-width="0.5"/>
+      <rect x="46" y="45" width="6" height="2" rx="1" fill="#00e5ff" fill-opacity="0.18" stroke="#00e5ff" stroke-width="0.5"/>
+
+    </svg>
+    <span class="nav-logo">MM.dev</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+    <span class="toggle-knob"></span>
+    <span class="toggle-icon-dark">🌙</span>
+    <span class="toggle-icon-light">☀️</span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="hero-inner">
+    <div class="hero-tag">Available for Opportunities</div>
+    <h1>
+      Mulenga<br>
+      <span class="name-accent">Munthali</span>
+    </h1>
+    <p class="hero-sub">ICT Student &amp; Full-Stack Developer</p>
+    <p class="hero-desc">
+      Third-year BSc ICT student at Rockview University, Zambia — passionate about software development, computer hardware, networking, and building tech solutions for Africa's digital future.
+    </p>
+    <div class="btn-row">
+      <a href="https://github.com/David-zmd" target="_blank" rel="noopener" class="btn-primary">Get In Touch ↗</a>
+      <a href="https://github.com/David-zmd" target="_blank" rel="noopener" class="btn-ghost" style="background:#1d4ed8; border-color:#1d4ed8; color:#fff;">View Projects →</a>
+    </div>
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-num">3rd</div>
+        <div class="stat-label">Year BSc ICT</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">Full</div>
+        <div class="stat-label">Stack Dev</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">ZM</div>
+        <div class="stat-label">Lusaka, Zambia</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-grid fade-in">
+    <div class="about-avatar">
+      <span class="avatar-initials">MM</span>
+      <div class="avatar-corner tl"></div>
+      <div class="avatar-corner tr"></div>
+      <div class="avatar-corner bl"></div>
+      <div class="avatar-corner br"></div>
+    </div>
+    <div class="about-text">
+      <div class="section-header">
+        <span class="section-tag">01 / About</span>
+        <h2 class="section-title">Who I Am</h2>
+      </div>
+      <p>
+        I'm Mulenga Munthali, a third-year Bachelor of Science in ICT student at Rockview University in Zambia, studying in the Department of Information and Communication Technology.
+      </p>
+      <p>
+        Outside academics, I run a computer services business offering OS installation, hardware assembly, repair, and maintenance. I'm also deeply interested in fintech and cryptocurrency platforms accessible to African users.
+      </p>
+      <ul class="contact-list">
+        <li>
+          <span class="lbl">Email</span>
+          <a href="mailto:mulengadavid515@gmail.com">mulengadavid515@gmail.com</a>
+        </li>
+        <li>
+          <span class="lbl">Phone</span>
+          <a href="tel:+260777875879">+260 777 875 879</a>
+        </li>
+        <li>
+          <span class="lbl">GitHub</span>
+          <a href="https://github.com/David-zmd" target="_blank" rel="noopener">github.com/David-zmd</a>
+        </li>
+        <li>
+          <span class="lbl">Location</span>
+          <span>Lusaka, Zambia</span>
+        </li>
+        <li>
+          <span class="lbl">Status</span>
+          <span style="color: #10b981">● Open to Opportunities</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="skills-section" id="skills">
+  <div class="skills-inner">
+    <div class="section-header fade-in">
+      <span class="section-tag">02 / Skills</span>
+      <h2 class="section-title">What I Do</h2>
+    </div>
+    <div class="skills-grid">
+
+      <div class="skill-card fade-in" style="--card-accent: #00e5ff;">
+        <div class="skill-card-icon" style="background: rgba(0,229,255,0.1);">💻</div>
+        <h3>Web Development</h3>
+        <p>Building full-featured web applications — from single-page apps to complex multi-page systems with authentication, admin panels, and custom UI systems.</p>
+        <div class="skill-pills">
+          <span class="pill">HTML5</span>
+          <span class="pill">CSS3</span>
+          <span class="pill">JavaScript</span>
+          <span class="pill">React/JSX</span>
+          <span class="pill">Tailwind CSS</span>
+        </div>
+      </div>
+
+      <div class="skill-card fade-in" style="--card-accent: #7c3aed;">
+        <div class="skill-card-icon" style="background: rgba(124,58,237,0.1);">🔧</div>
+        <h3>Hardware &amp; Repair</h3>
+        <p>Hands-on expertise in PC hardware assembly, OS installation, troubleshooting, and maintenance — the backbone of my computer services business.</p>
+        <div class="skill-pills">
+          <span class="pill" style="color:#a78bfa; border-color:rgba(167,139,250,0.3)">OS Installation</span>
+          <span class="pill" style="color:#a78bfa; border-color:rgba(167,139,250,0.3)">PC Assembly</span>
+          <span class="pill" style="color:#a78bfa; border-color:rgba(167,139,250,0.3)">Diagnostics</span>
+          <span class="pill" style="color:#a78bfa; border-color:rgba(167,139,250,0.3)">Maintenance</span>
+        </div>
+      </div>
+
+      <div class="skill-card fade-in" style="--card-accent: #10b981;">
+        <div class="skill-card-icon" style="background: rgba(16,185,129,0.1);">🌐</div>
+        <h3>Networking</h3>
+        <p>Strong foundation in OSI model, IP addressing, subnetting, network security, and transmission media from ICT coursework and practical study.</p>
+        <div class="skill-pills">
+          <span class="pill" style="color:#10b981; border-color:rgba(16,185,129,0.3)">OSI Model</span>
+          <span class="pill" style="color:#10b981; border-color:rgba(16,185,129,0.3)">TCP/IP</span>
+          <span class="pill" style="color:#10b981; border-color:rgba(16,185,129,0.3)">Subnetting</span>
+          <span class="pill" style="color:#10b981; border-color:rgba(16,185,129,0.3)">Network Security</span>
+        </div>
+      </div>
+
+      <div class="skill-card fade-in" style="--card-accent: #f59e0b;">
+        <div class="skill-card-icon" style="background: rgba(245,158,11,0.1);">🗄️</div>
+        <h3>Database Administration</h3>
+        <p>Proficient in SQL, database design, normalization, ACID properties, and query optimization from university coursework (ICT 211).</p>
+        <div class="skill-pills">
+          <span class="pill" style="color:#f59e0b; border-color:rgba(245,158,11,0.3)">SQL</span>
+          <span class="pill" style="color:#f59e0b; border-color:rgba(245,158,11,0.3)">Normalization</span>
+          <span class="pill" style="color:#f59e0b; border-color:rgba(245,158,11,0.3)">ACID</span>
+          <span class="pill" style="color:#f59e0b; border-color:rgba(245,158,11,0.3)">ERD Design</span>
+        </div>
+      </div>
+
+      <div class="skill-card fade-in" style="--card-accent: #ec4899;">
+        <div class="skill-card-icon" style="background: rgba(236,72,153,0.1);">⚡</div>
+        <h3>Digital Logic &amp; Architecture</h3>
+        <p>Deep understanding of logic gates, arithmetic circuits, flip-flops, memory elements, and CPU architecture principles.</p>
+        <div class="skill-pills">
+          <span class="pill" style="color:#ec4899; border-color:rgba(236,72,153,0.3)">Logic Gates</span>
+          <span class="pill" style="color:#ec4899; border-color:rgba(236,72,153,0.3)">CPU Arch</span>
+          <span class="pill" style="color:#ec4899; border-color:rgba(236,72,153,0.3)">Registers</span>
+          <span class="pill" style="color:#ec4899; border-color:rgba(236,72,153,0.3)">Flip-Flops</span>
+        </div>
+      </div>
+
+      <div class="skill-card fade-in" style="--card-accent: #06b6d4;">
+        <div class="skill-card-icon" style="background: rgba(6,182,212,0.1);">🐍</div>
+        <h3>Programming</h3>
+        <p>Experience with Python for scripting and image processing pipelines; JavaScript/React for building interactive and complex frontend applications.</p>
+        <div class="skill-pills">
+          <span class="pill" style="color:#06b6d4; border-color:rgba(6,182,212,0.3)">Python</span>
+          <span class="pill" style="color:#06b6d4; border-color:rgba(6,182,212,0.3)">JavaScript</span>
+          <span class="pill" style="color:#06b6d4; border-color:rgba(6,182,212,0.3)">React</span>
+          <span class="pill" style="color:#06b6d4; border-color:rgba(6,182,212,0.3)">Shell/Bash</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="experience" id="experience">
+  <div class="experience-inner">
+    <div class="section-header fade-in">
+      <span class="section-tag">03 / Experience</span>
+      <h2 class="section-title">Where I've Worked</h2>
+    </div>
+    <div class="timeline fade-in">
+
+      <div class="tl-item">
+        <div class="tl-dot active"></div>
+        <div class="tl-date">Ongoing</div>
+        <div class="tl-role">Founder &amp; Technician</div>
+        <div class="tl-org">Computer Services Business — Lusaka, Zambia</div>
+        <div class="tl-desc">
+          Running an independent computer services operation offering OS installation, PC hardware assembly, fault diagnosis, repair, and routine maintenance. Serving individual and business clients in Lusaka.
+        </div>
+        <div class="tl-tags">
+          <span class="tl-tag">Hardware</span>
+          <span class="tl-tag">OS Installation</span>
+          <span class="tl-tag">Client Service</span>
+          <span class="tl-tag">Entrepreneurship</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects" id="projects">
+  <div class="projects-inner">
+    <div class="section-header fade-in">
+      <span class="section-tag">04 / Projects</span>
+      <h2 class="section-title">What I've Built</h2>
+    </div>
+    <div class="projects-grid">
+
+      <div class="proj-card fade-in">
+        <div class="proj-glow"></div>
+        <div class="proj-num">01 —</div>
+        <div class="proj-title">Mega Banking Web App</div>
+        <div class="proj-desc">A full-featured single-file web banking application with multi-page navigation, admin panels, user authentication, account management, and custom SVG branding — built progressively across multiple iterations.</div>
+        <div class="proj-stack">
+          <span class="proj-tech">HTML</span>
+          <span class="proj-tech">CSS</span>
+          <span class="proj-tech">JavaScript</span>
+          <span class="proj-tech">SVG</span>
+          <span class="proj-tech">Single-Page Architecture</span>
+        </div>
+      </div>
+
+      <div class="proj-card fade-in">
+        <div class="proj-glow"></div>
+        <div class="proj-num">02 —</div>
+        <div class="proj-title">Android Music Player App</div>
+        <div class="proj-desc">A fully functional Android music player built as a self-contained React/JSX component with OLED-dark aesthetic, animated visualizers, and per-track theming — a showcase of modern UI craft.</div>
+        <div class="proj-stack">
+          <span class="proj-tech">React/JSX</span>
+          <span class="proj-tech">CSS Animations</span>
+          <span class="proj-tech">OLED UI</span>
+          <span class="proj-tech">Audio API</span>
+        </div>
+      </div>
+
+      <div class="proj-card fade-in">
+        <div class="proj-glow"></div>
+        <div class="proj-num">03 —</div>
+        <div class="proj-title">Cyberpunk Social Media Banner</div>
+        <div class="proj-desc">A cyberpunk-styled HTML social media banner for a computer services business, using advanced CSS, layered effects, and custom typography to create a striking visual identity.</div>
+        <div class="proj-stack">
+          <span class="proj-tech">HTML</span>
+          <span class="proj-tech">CSS3</span>
+          <span class="proj-tech">SVG Graphics</span>
+          <span class="proj-tech">Visual Design</span>
+        </div>
+      </div>
+
+      <div class="proj-card fade-in">
+        <div class="proj-glow"></div>
+        <div class="proj-num">04 —</div>
+        <div class="proj-title">Python Image Processing Pipeline</div>
+        <div class="proj-desc">A Python-based image enhancement and processing pipeline for photo editing, demonstrating skills in data processing, file I/O, and applying transformations programmatically.</div>
+        <div class="proj-stack">
+          <span class="proj-tech">Python</span>
+          <span class="proj-tech">PIL/Pillow</span>
+          <span class="proj-tech">Image Processing</span>
+          <span class="proj-tech">Scripting</span>
+        </div>
+      </div>
+
+      <div class="proj-card fade-in">
+        <div class="proj-glow"></div>
+        <div class="proj-num">05 —</div>
+        <div class="proj-title">CV &amp; Portfolio Documents</div>
+        <div class="proj-desc">Professional CV and cover letter materials crafted for corporate ICT roles, including ZESCO industrial attachment application — demonstrating technical writing and professional communication skills.</div>
+        <div class="proj-stack">
+          <span class="proj-tech">Technical Writing</span>
+          <span class="proj-tech">Document Design</span>
+          <span class="proj-tech">Professional Branding</span>
+        </div>
+      </div>
+
+      <div class="proj-card fade-in">
+        <div class="proj-glow"></div>
+        <div class="proj-num">06 —</div>
+        <div class="proj-title">Digital Logic Study System</div>
+        <div class="proj-desc">Completed a deep technical study session spanning logic gates, arithmetic circuits, memory elements, and full CPU architecture — foundational knowledge applied in university coursework.</div>
+        <div class="proj-stack">
+          <span class="proj-tech">Digital Logic</span>
+          <span class="proj-tech">CPU Architecture</span>
+          <span class="proj-tech">Boolean Algebra</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section class="education" id="education">
+  <div class="edu-inner">
+    <div class="section-header fade-in">
+      <span class="section-tag">05 / Education</span>
+      <h2 class="section-title">Academic Background</h2>
+    </div>
+    <div class="fade-in">
+      <div class="edu-card">
+        <div class="edu-icon">🎓</div>
+        <div>
+          <div class="edu-title">Bachelor of Science in Information &amp; Communication Technology</div>
+          <div class="edu-inst">Rockview University — Lusaka, Zambia</div>
+          <div class="edu-year">2022 – Present &nbsp;|&nbsp; Year 3 of 4</div>
+          <div class="edu-desc">Department of Information and Communication Technology. Key courses include Networking (ICT 213), Database Administration (ICT 211), Digital Logic &amp; Computer Architecture, and Software Development.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="section-header fade-in">
+      <span class="section-tag">06 / Contact</span>
+      <h2 class="section-title">Let's Connect</h2>
+    </div>
+    <p class="contact-sub fade-in">
+      Open to internships, freelance projects, collaborations, and full-time opportunities in ICT and software development. Feel free to reach out!
+    </p>
+    <div class="contact-cards fade-in">
+      <div class="contact-card">
+        <span class="cc-icon">📧</span>
+        <div class="cc-label">Email</div>
+        <div class="cc-value"><a href="mailto:mulengadavid515@gmail.com">mulengadavid515@gmail.com</a></div>
+      </div>
+      <div class="contact-card">
+        <span class="cc-icon">📱</span>
+        <div class="cc-label">Phone / WhatsApp</div>
+        <div class="cc-value"><a href="tel:+260777875879">+260 777 875 879</a></div>
+      </div>
+      <div class="contact-card">
+        <span class="cc-icon">🐙</span>
+        <div class="cc-label">GitHub</div>
+        <div class="cc-value"><a href="https://github.com/David-zmd" target="_blank" rel="noopener">David-zmd</a></div>
+      </div>
+      <div class="contact-card">
+        <span class="cc-icon">📍</span>
+        <div class="cc-label">Location</div>
+        <div class="cc-value" style="color: var(--text)">Lusaka, Zambia</div>
+      </div>
+    </div>
+    <div class="fade-in">
+      <a href="mailto:mulengadavid515@gmail.com" class="btn-primary" style="display:inline-flex">Send Me a Message ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2025 Mulenga Munthali <span class="footer-dot">●</span> Lusaka, Zambia</span>
+  <span>BSc ICT <span class="footer-dot">·</span> Rockview University</span>
+</footer>
+
+<script>
+  // Theme toggle — light mode is default
+  const toggleBtn = document.getElementById('themeToggle');
+  const html = document.documentElement;
+  const saved = localStorage.getItem('theme');
+  if (saved !== 'dark') html.classList.add('light');
+  toggleBtn.addEventListener('click', () => {
+    html.classList.toggle('light');
+    localStorage.setItem('theme', html.classList.contains('light') ? 'light' : 'dark');
+  });
+
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(() => {
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    }, 80);
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px';
+      cursor.style.height = '20px';
+      ring.style.width = '60px';
+      ring.style.height = '60px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px';
+      cursor.style.height = '12px';
+      ring.style.width = '40px';
+      ring.style.height = '40px';
+    });
+  });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) t.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
